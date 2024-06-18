@@ -1,94 +1,54 @@
-import Image from "next/image";
+'use client'
+import { useFormState, useFormStatus } from 'react-dom';
+import { createUser } from '@/lib/actions'
 import styles from "./page.module.css";
+import { useEffect, useRef } from 'react';
 
 export default function Home() {
+  const [state, formAction] = useFormState(createUser, {message: '',})
+  const { pending } = useFormStatus();
+
+  const ref = useRef(null)
+    useEffect(() => {
+        if (state.message.indexOf('Created user') === 0) {
+            ref.current?.reset()
+            console.log(state.message)
+        } else if (state.message) {
+            console.log(state.message)
+        }
+    }, [state.message])
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+      <div className={styles.formHolder}>
+        <div className={styles.leftPart}>
+          <div>Sign Up</div>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        <div className={styles.rightPart}>
+          <form className={styles.form} action={formAction}>
+            <div>
+              <h2>Sign Up</h2>
+            </div>
+            <div className={styles.inputsHolder}>
+              <input placeholder="first name" type="text" name="firstName" required/>
+              <input placeholder="last name" type="text" name="lastName" required/>
+            </div>
+            <div className={styles.inputsHolder}>
+              <input placeholder="email" type="email" name="email" required/>
+              <input placeholder="gender" type="text" name="gender"/>
+            </div>
+            <div className={styles.inputsHolder}>
+              <input placeholder="phone number" type="number" name="phoneNumber" required/>
+              <input placeholder="DOB" type="date" name="date" />
+            </div>
+            <div className={styles.inputsHolder}>
+              <input placeholder="password" type="password" name="password" required/>
+              <input placeholder="confirm password" type="password" name="confirmPassword" required/>
+            </div>
+            <div className={styles.formButtonHolder}>
+              <button type="submit" disabled={pending}>{pending? "Signing up...":"Sign Up"}</button>
+            </div>
+          </form>
+        </div>
       </div>
     </main>
   );
